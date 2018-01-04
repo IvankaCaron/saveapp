@@ -1,17 +1,53 @@
 {% load leaflet_tags %}
 <html>
-  <head>
+<head>
     {% leaflet_js plugins="forms" %}
     {% leaflet_css plugins="forms" %}
-  </head>
-  <body>
-    <h1>Edit {{ object }}</h1>
-    <div class="container">
-    <form  method="post">
+</head>
+<body>
+<h1>Edit {{ object }}</h1>
+<div class="container">
+
+
+    <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-success">ajout</button>
+
+
+        <button type="submit" class="btn btn-success">ajout test</button>
+
+
     </form>
-     </div>
-  </body>
+
+    <script language="javascript" type="text/javascript">
+
+        var myLocation = {};
+
+
+         window.addEventListener("map:init", function (e) {
+             var detail = e.detail;
+
+              navigator.geolocation.getCurrentPosition(function (position) {
+            var lat = document.getElementById('id_latitude');
+            var lon = document.getElementById('id_longitude');
+            myLocation.lat = position.coords.latitude;
+            myLocation.lon = position.coords.longitude;
+
+            var marker = new L.Marker(myLocation, {draggable:true});
+          detail.map.addLayer(marker);
+           detail.map.setView(new L.LatLng(myLocation.lat, myLocation.lon), 15);
+
+
+        });
+
+
+
+       console.dir(detail);
+    }, false);
+    </script>
+
+
+</div>
+
+</body>
 </html>
