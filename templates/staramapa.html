@@ -50,10 +50,14 @@
 
             pointToLayer: function (feature, latlng) {
 
-                if (feature.properties.typeProduct == "1"){
-                    return L.marker(latlng, {
+                var iconURL = "/media/icon_image/red.png";
+
+                if(feature.properties.typeProduct == "1")
+
+
+                return L.marker(latlng, {
                     icon: L.icon({
-                        iconUrl: "/media/icon_image/red.png",
+                        iconUrl: iconURL,
                         iconSize: [24, 28],
                         iconAnchor: [12, 28],
                         popupAnchor: [0, -25]
@@ -61,24 +65,6 @@
                     title: feature.properties.NAME,
                     riseOnHover: true
                 });
-                }
-
-
-                if (feature.properties.typeProduct == "2"){
-                    return L.marker(latlng, {
-                    icon: L.icon({
-                        iconUrl: "/media/icon_image/green.png",
-                        iconSize: [24, 28],
-                        iconAnchor: [12, 28],
-                        popupAnchor: [0, -25]
-                    }),
-                    title: feature.properties.NAME,
-                    riseOnHover: true
-                });
-                }
-
-
-
             },
 
 
