@@ -77,6 +77,30 @@
                 });
                 }
 
+                 if (feature.properties.typeProduct == "4"){
+                    return L.marker(latlng, {
+                    icon: L.icon({
+                        iconUrl: "/static/img/HONEY.svg",
+                        iconSize: [24, 28],
+                        iconAnchor: [12, 28],
+                        popupAnchor: [0, -25]
+                    }),
+                    title: feature.properties.NAME,
+                    riseOnHover: true
+                });
+                }
+
+                else
+                    return L.marker(latlng, {
+                    icon: L.icon({
+                        iconUrl: "/static/img/APPLE.svg",
+                        iconSize: [24, 28],
+                        iconAnchor: [12, 28],
+                        popupAnchor: [0, -25]
+                    }),
+                    title: feature.properties.NAME,
+                    riseOnHover: true
+                });
 
 
             },
@@ -107,6 +131,7 @@
 
              var marker = new L.Marker(myLocation, {draggable:true});
           map.addLayer(marker);
+          marker.bindPopup("<b>I am here!</b>").openPopup();
            map.setView(new L.LatLng(myLocation.lat, myLocation.lon), 12);
 
         });

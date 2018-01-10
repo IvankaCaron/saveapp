@@ -35,6 +35,7 @@
 
             var marker = new L.Marker(myLocation, {draggable:true});
           detail.map.addLayer(marker);
+          marker.bindPopup("<b>Hi, You are here!</b><br />Add your spot.").openPopup();
            detail.map.setView(new L.LatLng(myLocation.lat, myLocation.lon), 15);
 
 

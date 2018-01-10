@@ -14,17 +14,13 @@ from leaflet.forms.widgets import LeafletWidget
 from django.contrib.gis.db import models
 
 
-
-
 class MapPageView(TemplateView):
     template_name = 'map.html'
-
 
 
 def point_datasets(request):
     points = serialize('geojson', Spot.objects.all())
     return HttpResponse(points, content_type= 'json')
-
 
 
 class SpotForm(forms.ModelForm):
