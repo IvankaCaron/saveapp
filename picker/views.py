@@ -17,11 +17,22 @@ from django.contrib.gis.db import models
 class MapPageView(TemplateView):
     template_name = 'map.html'
 
+class MapSearchView(TemplateView):
+    template_name = 'search.html'
+
+class MapSearchNewView(TemplateView):
+    template_name = 'searchNew.html'
+
+class MapSearchSampleView(TemplateView):
+    template_name = 'searchSample.html'
+
 
 def point_datasets(request):
     points = serialize('geojson', Spot.objects.all())
     return HttpResponse(points, content_type= 'json')
 
+#Spot.objects.get(geojson__contains={'name':kiwi})
+#Spot.objects.get(geojson__name= 'kiwi')
 
 class SpotForm(forms.ModelForm):
    # latitude = forms.FloatField()

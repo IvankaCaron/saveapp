@@ -16,19 +16,26 @@
     </style>
     <link rel="stylesheet" type="text/css"
           href="{% static 'leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.css' %}">
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'leaflet-search/leaflet-search.css' %}">
     <script type="text/javascript" src="{% static 'dist/leaflet.ajax.js' %}"></script>
     <script type="text/javascript"
             src="{% static 'leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.js' %}"></script>
+
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 </head>
 
 <body>
-
+<script type="text/javascript"
+        src="{% static 'leaflet-search/leaflet-search.js' %}"></script>
 
 <h3>My Map </h3>
 <script type="text/javascript">
+
+
     function our_layers(map, options) {
+
 
         var osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
@@ -39,119 +46,137 @@
             attribution: 'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
         });
 
-
-
-
-
-
-
+        // get points with ajax
         var points = new L.GeoJSON.AJAX("{% url 'spot' %}", {
-
 
             pointToLayer: function (feature, latlng) {
 
-                if (feature.properties.typeProduct == "1"){
+                if (feature.properties.typeProduct == "1") {
                     return L.marker(latlng, {
-                    icon: L.icon({
-                        iconUrl: "/media/icon_image/red.png",
-                        iconSize: [24, 28],
-                        iconAnchor: [12, 28],
-                        popupAnchor: [0, -25]
-                    }),
-                    title: feature.properties.NAME,
-                    riseOnHover: true
-                });
+                        icon: L.icon({
+                            iconUrl: "/media/icon_image/red.png",
+                            iconSize: [24, 28],
+                            iconAnchor: [12, 28],
+                            popupAnchor: [0, -25]
+                        }),
+                        title: feature.properties.NAME,
+                        riseOnHover: true
+                    });
                 }
 
 
-                if (feature.properties.typeProduct == "2"){
+                if (feature.properties.typeProduct == "2") {
                     return L.marker(latlng, {
-                    icon: L.icon({
-                        iconUrl: "/media/icon_image/green.png",
-                        iconSize: [24, 28],
-                        iconAnchor: [12, 28],
-                        popupAnchor: [0, -25]
-                    }),
-                    title: feature.properties.NAME,
-                    riseOnHover: true
-                });
+                        icon: L.icon({
+                            iconUrl: "/media/icon_image/green.png",
+                            iconSize: [24, 28],
+                            iconAnchor: [12, 28],
+                            popupAnchor: [0, -25]
+                        }),
+                        title: feature.properties.NAME,
+                        riseOnHover: true
+                    });
                 }
 
-                 if (feature.properties.typeProduct == "4"){
+                if (feature.properties.typeProduct == "4") {
                     return L.marker(latlng, {
-                    icon: L.icon({
-                        iconUrl: "/static/img/HONEY.svg",
-                        iconSize: [24, 28],
-                        iconAnchor: [12, 28],
-                        popupAnchor: [0, -25]
-                    }),
-                    title: feature.properties.NAME,
-                    riseOnHover: true
-                });
+                        icon: L.icon({
+                            iconUrl: "/static/img/HONEY.svg",
+                            iconSize: [24, 28],
+                            iconAnchor: [12, 28],
+                            popupAnchor: [0, -25]
+                        }),
+                        title: feature.properties.NAME,
+                        riseOnHover: true
+                    });
                 }
 
                 else
                     return L.marker(latlng, {
-                    icon: L.icon({
-                        iconUrl: "/static/img/APPLE.svg",
-                        iconSize: [24, 28],
-                        iconAnchor: [12, 28],
-                        popupAnchor: [0, -25]
-                    }),
-                    title: feature.properties.NAME,
-                    riseOnHover: true
-                });
+                        icon: L.icon({
+                            iconUrl: "/static/img/APPLE.svg",
+                            iconSize: [24, 28],
+                            iconAnchor: [12, 28],
+                            popupAnchor: [0, -25]
+                        }),
+                        title: feature.properties.NAME,
+                        riseOnHover: true
+                    });
 
 
             },
-
-
             onEachFeature: function (feature, layer) {
                 layer.bindPopup(feature.properties.name.toString() + '<br>' + feature.properties.description.toString());
-
             }
 
-
         });
-
+        console.dir(points);
+        // add points to map
         points.addTo(map);
 
-         var myLocation = {};
- console.dir(navigator);
-         navigator.geolocation.getCurrentPosition(function (position) {
-             console.log('position callback called');
+        var myLocation = {};
+
+        navigator.geolocation.getCurrentPosition(function (position) {
             var lat = document.getElementById('id_latitude');
             var lon = document.getElementById('id_longitude');
             myLocation.lat = position.coords.latitude;
             myLocation.lon = position.coords.longitude;
 
-            console.dir(myLocation);
+            var marker = new L.Marker(myLocation, {draggable: true});
+            map.addLayer(marker);
+            marker.bindPopup("<b>I am here!</b>").openPopup();
+            map.setView(new L.LatLng(myLocation.lat, myLocation.lon), 12);
 
 
+            var controlSearch = new L.Control.Search({
+                position: 'topright',
+                propertyName: 'name',
+                layer: points,
+                initial: false,
+                zoom: 16,
+                marker: false,
+                circleLocation: true,
+                moveToLocation: function(latlng, name, map) {
+  			map.setView(latlng, 16); // access the zoom
+		}
+            });
 
-             var marker = new L.Marker(myLocation, {draggable:true});
-          map.addLayer(marker);
-          marker.bindPopup("<b>I am here!</b>").openPopup();
-           map.setView(new L.LatLng(myLocation.lat, myLocation.lon), 12);
+            controlSearch.on('search:locationfound', function (e) {
+
+                if (e.layer._popup)
+                    e.layer.openPopup();
+            }).on('search:collapsed', function (e) {
+                featuresLayer.eachLayer(function (layer) {	//restore feature color
+                    featuresLayer.resetStyle(layer);
+                });
+            });
+
+            map.addControl(controlSearch);
+
 
         });
+
+       // var markersLayer = new L.LayerGroup();
 
 
         var baseLayers = {
             "OSM": osm,
             "OpenTopoMap": OpenTopoMap
-        }
+        };
+
         var groupedOverlays = {
             "Layers": {
 
                 "spot": points
             }
         };
+
         L.control.groupedLayers(baseLayers, groupedOverlays).addTo(map);
 
 
-
     }
+
+
 </script>
 
 {% leaflet_map "gis" callback="window.our_layers" %}
